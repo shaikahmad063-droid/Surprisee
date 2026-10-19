@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Bouquet For My World 💐💗</title>
+  <!-- Google Fonts & Canvas Confetti -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Sacramento&family=Great+Vibes&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1b0826 0%, #08020d 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* Ambient Background Glow */
+    .glow-bg {
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(255, 42, 133, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(40px);
+    }
+
+    /* Header Styling */
+    .header {
+      text-align: center;
+      z-index: 2;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Sacramento', cursive;
+      font-size: 3.5rem;
+      color: #ff7ebb;
+      text-shadow: 0 0 15px rgba(255, 42, 133, 0.8), 0 0 30px rgba(255, 126, 187, 0.5);
+      font-weight: normal;
+    }
+
+    .sub-heading {
+      font-size: 0.95rem;
+      color: #e0d0eb;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
+    /* 3D Scene Wrapper */
+    .scene {
+      width: 320px;
+      height: 420px;
+      perspective: 1000px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Bouquet 3D Container */
+    .bouquet-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: gentleRotate 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes gentleRotate {
+      0% {
+        transform: rotateY(-12deg) rotateX(4deg) translateY(0);
+      }
+      100% {
+        transform: rotateY(12deg) rotateX(-2deg) translateY(-15px);
+      }
+    }
+
+    /* --- FLOWER BLOOMS (LAYERED TULIPS) --- */
+    .flower-head {
+      position: absolute;
+      width: 55px;
+      height: 75px;
+      border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px rgba(255, 42, 133, 0.8);
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .flower-head:hover {
+      transform: scale(1.15) translateZ(20px) !important;
+    }
+
+    /* Petal Details Inside Flowers */
+    .flower-head::before, .flower-head::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .flower-head::before {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(-15deg);
+    }
+
+    .flower-head::after {
+      background: rgba(0, 0, 0, 0.15);
+      transform: rotate(15deg);
+    }
+
+    /* Vibrant Color & Position Variations */
+    .f1 { top: 20px; left: 130px; background: linear-gradient(135deg, #ff0055, #ff7ebb); transform: translateZ(30px); }
+    .f2 { top: 45px; left: 75px; background: linear-gradient(135deg, #ff2a85, #ffa3ce); transform: rotate(-18deg) translateZ(15px); }
+    .f3 { top: 45px; left: 185px; background: linear-gradient(135deg, #d80068, #ff6ba8); transform: rotate(18deg) translateZ(15px); }
+    .f4 { top: 90px; left: 40px; background: linear-gradient(135deg, #ff0055, #ffb3d9); transform: rotate(-30deg) translateZ(5px); }
+    .f5 { top: 90px; left: 220px; background: linear-gradient(135deg, #ff3399, #ff85c2); transform: rotate(30deg) translateZ(5px); }
+    .f6 { top: 85px; left: 130px; background: linear-gradient(135deg, #e6005c, #ff99cc); transform: translateZ(45px); }
+
+    /* Stems */
+    .stem {
+      position: absolute;
+      width: 5px;
+      height: 220px;
+      background: linear-gradient(to bottom, #2d5a27, #132a10);
+      top: 130px;
+      border-radius: 4px;
+      z-index: -1;
+    }
+
+    .s1 { left: 155px; transform: rotate(0deg); }
+    .s2 { left: 150px; transform: rotate(-12deg); }
+    .s3 { left: 160px; transform: rotate(12deg); }
+    .s4 { left: 145px; transform: rotate(-22deg); }
+    .s5 { left: 165px; transform: rotate(22deg); }
+
+    /* Leaves */
+    .leaf {
+      position: absolute;
+      width: 30px;
+      height: 90px;
+      background: linear-gradient(135deg, #3a7533, #1e4219);
+      border-radius: 0% 100% 0% 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .l1 { top: 170px; left: 75px; transform: rotate(-40deg); }
+    .l2 { top: 170px; left: 205px; transform: rotate(10deg) scaleX(-1); }
+
+    /* Elegant Bouquet Wrapping Paper */
+    .wrapper-paper {
+      position: absolute;
+      bottom: 25px;
+      left: 60px;
+      width: 200px;
+      height: 190px;
+      background: linear-gradient(135deg, #2a083b, #15031f);
+      border: 2px solid #ff7ebb;
+      clip-path: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+      box-shadow: inset 0 0 20px rgba(255, 42, 133, 0.4);
+      transform: translateZ(25px);
+    }
+
+    /* Golden Bow Ribbon */
+    .ribbon-bow {
+      position: absolute;
+      bottom: 60px;
+      left: 142px;
+      font-size: 2.2rem;
+      transform: translateZ(40px);
+      filter: drop-shadow(0 0 8px #ff7ebb);
+    }
+
+    /* --- THE INTERACTIVE ENVELOPE (ON BOUQUET) --- */
+    .envelope-container {
+      position: absolute;
+      bottom: 100px;
+      left: 110px;
+      width: 100px;
+      height: 68px;
+      background: linear-gradient(135deg, #ff2a85, #ff7ebb);
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 42, 133, 0.6);
+      transform: translateZ(55px) rotate(-4deg);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .envelope-container:hover {
+      transform: translateZ(75px) rotate(0deg) scale(1.12);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 126, 187, 0.9);
+    }
+
+    /* Envelope Flap */
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-top: 36px solid #e6005c;
+      transform-origin: top;
+    }
+
+    /* Golden Heart Wax Seal */
+    .wax-seal {
+      width: 26px;
+      height: 26px;
+      background: radial-gradient(circle, #ffe680, #ffb300);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    /* Tap Indicator Hint */
+    .tap-hint {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: #ff7ebb;
+      background: rgba(255, 126, 187, 0.1);
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1px dashed rgba(255, 126, 187, 0.4);
+      animation: pulseHint 2s infinite;
+      z-index: 2;
+    }
+
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* --- EXPANDING LETTER MODAL --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(5, 2, 8, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .letter-paper {
+      background: linear-gradient(135deg, #1f0b2e, #12051c);
+      border: 2px solid #ff7ebb;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 82vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(255, 42, 133, 0.5);
+      animation: unfoldLetter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      position: relative;
+    }
+
+    @keyframes unfoldLetter {
+      from { opacity: 0; transform: scale(0.6) translateY(50px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .letter-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.3rem;
+      color: #ff7ebb;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .letter-body p {
+      font-size: 0.94rem;
+      color: #f3e5f8;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .letter-signature {
+      text-align: right;
+      color: #ff7ebb;
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-top: 20px;
+    }
+
+    .close-btn {
+      background: linear-gradient(135deg, #ff2a85, #ff7ebb);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto 0;
+      box-shadow: 0 4px 15px rgba(255, 42, 133, 0.4);
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Happy 2 Months! 💗</h1>
+    <div class="sub-heading">A special bouquet made just for you</div>
+  </div>
+
+  <!-- 3D Interactive Bouquet -->
+  <div class="scene">
+    <div class="bouquet-3d">
+      <!-- Stems -->
+      <div class="stem s1"></div>
+      <div class="stem s2"></div>
+      <div class="stem s3"></div>
+      <div class="stem s4"></div>
+      <div class="stem s5"></div>
+
+      <!-- Leaves -->
+      <div class="leaf l1"></div>
+      <div class="leaf l2"></div>
+
+      <!-- Flower Blooms -->
+      <div class="flower-head f1"></div>
+      <div class="flower-head f2"></div>
+      <div class="flower-head f3"></div>
+      <div class="flower-head f4"></div>
+      <div class="flower-head f5"></div>
+      <div class="flower-head f6"></div>
+
+      <!-- Wrap Paper -->
+      <div class="wrapper-paper"></div>
+      <div class="ribbon-bow">🎀</div>
+
+      <!-- Tap Envelope on Bouquet -->
+      <div class="envelope-container" onclick="openLetter()">
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">💖</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tap-hint">✉️ Tap the letter pinned on the bouquet!</div>
+
+  <!-- Letter Modal -->
+  <div class="modal-overlay" id="letterModal">
+    <div class="letter-paper">
+      <div class="letter-title">My Dearest Love,</div>
+      
+      <div class="letter-body">
+        <p>Happy 2-month anniversary! It feels so special reflecting on these past two months with you. Even though we haven't met physically yet, the bond we share feels closer than anything I've ever known.</p>
+        
+        <p>I catch myself smiling whenever I think about our calls. Hearing your voice is honestly my favorite part of any day—it instantly puts me at ease and brings so much happiness into my life.</p>
+        
+        <p>I admire everything about you: the warmth in your eyes, your soft hair, your breathtaking smile, and the sweet sound of your voice. Talking with you for hours on call never feels long enough.</p>
+        
+        <p>Thank you for being my favorite person to talk to and for filling these two months with so much warmth. Distance is just temporary, but my love for you is forever.</p>
+      </div>
+
+      <div class="letter-signature">
+        I love you so much, babyy💗
+      </div>
+
+      <button class="close-btn" onclick="closeLetter()">Keep Bouquet 💐</button>
+    </div>
+  </div>
+
+  <script>
+    function openLetter() {
+      document.getElementById('letterModal').style.display = 'flex';
+      
+      // Sparkle / Confetti Effect on Open
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.5 },
+        colors: ['#ff2a85', '#ff7ebb', '#ffa3ce', '#ffffff']
+      });
+    }
+
+    function closeLetter() {
+      document.getElementById('letterModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
